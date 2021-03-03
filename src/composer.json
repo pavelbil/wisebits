@@ -1,0 +1,22 @@
+{
+    "name": "wisebits/test",
+    "description": "Bil Pavel's test project",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bil Pavel",
+            "email": "bilpavel@gmail.com"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "^9.5",
+        "ext-pdo": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app",
+            "Tests\\": "tests"
+        }
+    }
+}
