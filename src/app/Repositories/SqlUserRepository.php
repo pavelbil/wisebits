@@ -31,7 +31,9 @@ class SqlUserRepository implements UserRepository
     {
         $users = $this->connection->query("SELECT * FROM `{$this->getTableName()}`");
         $result = [];
+
         foreach ($users as $user) {
+            var_dump($user);
             $result[] = User::fromState($user);
         }
         return $result;

@@ -9,6 +9,16 @@ use Tests\UserTestCase;
 
 class SqlUserRepositoryTest extends UserTestCase
 {
+    private SqlUserRepository $repository;
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->exec(file_get_contents(__DIR__ . '/../data/setup.sql'));
+        $this->repository = new SqlUserRepository($pdo);
+
+    }
+
     public function testGetTableName()
     {
         $repository = new SqlUserRepository($this->createMock(PDO::class));
@@ -72,9 +82,16 @@ class SqlUserRepositoryTest extends UserTestCase
     public function testCreate()
     {
         $user = $this->getUserModel();
+        $user->setNotes('first init');
         $created = new \DateTime();
         $user->setCreated($created);
-        $stmt = $this->createMock(\PDOStatement::class);
+        $this->repository->create($user);
+        $user1 = $this->getUserModel();
+        $user1->setEmail('123');
+        $user1->setName('123');
+        $this->repository->create($user1);
+        var_dump($this->repository->findAll());
+        /*$stmt = $this->createMock(\PDOStatement::class);
         $stmt->expects($this->once())
             ->method('execute')
             ->with([
@@ -93,9 +110,9 @@ class SqlUserRepositoryTest extends UserTestCase
             ->willReturn($stmt);
 
 
-        $repository = new SqlUserRepository($fakePdo);
+        $repository = new SqlUserRepository($fakePdo);*/
 
-        $this->assertEquals(true, $repository->create($user));
+        //$this->assertEquals(true, $repository->create($user));
     }
 
     public function testFindAllEmpty()
