@@ -9,17 +9,10 @@ use Tests\UserTestCase;
 
 class SqlUserRepositoryTest extends UserTestCase
 {
-    private SqlUserRepository $repository;
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->repository = new SqlUserRepository(new PDO('sqlite::memory:'));
-    }
-
-
     public function testGetTableName()
     {
-        $this->assertEquals('users', $this->repository->getTableName());
+        $repository = new SqlUserRepository($this->createMock(PDO::class));
+        $this->assertEquals('users', $repository->getTableName());
     }
 
     public function testUpdate()
