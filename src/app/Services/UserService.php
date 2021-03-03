@@ -6,7 +6,6 @@ namespace App\Services;
 
 use App\Entities\User;
 use App\Repositories\UserRepository;
-use App\Validators\EmailValidator;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -26,17 +25,6 @@ class UserService implements LoggerAwareInterface
     {
         $this->repository = $repository;
         $this->setLogger($logger);
-    }
-
-    /**
-     * @return array
-     */
-    public function rules(): array
-    {
-        return [
-            'email' => [EmailValidator::class],
-            'name' => [],
-        ];
     }
 
     /**
