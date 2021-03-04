@@ -81,4 +81,12 @@ class SqlUserRepositoryTest extends \Codeception\Test\Unit
         $this->repository->update($user);
         $this->tester->seeInDatabase('users', ['id' => $id, 'name' => 'ivan']);
     }
+
+    public function testUpdateException()
+    {
+        $this->tester->expectThrowable(\Exception::class, function() {
+            $user = new User(null, 'alexander');
+            $this->repository->update($user);
+        });
+    }
 }
