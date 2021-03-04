@@ -2,3 +2,5 @@
 conf/*.env
 src/vendor
 src/.phpunit.result.cache
+src/tests/_data/*.sqlite
+src/tests/_data/*.sqlite_snapshot

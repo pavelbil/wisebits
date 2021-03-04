@@ -18,7 +18,7 @@ class SqlUserRepositoryTest extends \Codeception\Test\Unit
     protected function setUp(): void
     {
         parent::setUp();
-        $pdo = new \PDO('sqlite:users.sqlite');
+        $pdo = new \PDO('sqlite:tests/_data/users.sqlite');
         $this->repository = new SqlUserRepository($pdo);
     }
 

@@ -11,7 +11,7 @@ modules:
     step_decorators: ~
     config:
         Db:
-            dsn: 'sqlite:users.sqlite'
+            dsn: 'sqlite:tests/_data/users.sqlite'
             user: ''
             password:
             dump: tests/_data/dump.sql
