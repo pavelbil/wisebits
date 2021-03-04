@@ -30,7 +30,7 @@ class SqlUserRepositoryTest extends Unit
 
     public function testFindAll()
     {
-        $this->tester->assertCount(20, $this->repository->findAll());
+        $this->tester->seeNumRecords(count($this->repository->findAll()), 'users');
     }
 
     public function testCreate()
