@@ -31,6 +31,7 @@ class SqlUserRepository implements UserRepository
     {
         $users = $this->connection->query("SELECT * FROM `{$this->getTableName()}`");
         $result = [];
+
         foreach ($users as $user) {
             $result[] = User::fromState($user);
         }
@@ -67,15 +68,21 @@ class SqlUserRepository implements UserRepository
     /**
      * Create user
      * @param User $user
-     * @return bool
+     * @return int
      */
-    public function create(User $user): bool
+    public function create(User $user): int
     {
         $sql = "INSERT INTO `{$this->getTableName()}` (`name`, `email`, `created`, `deleted`, `notes`) 
                 VALUES (:name, :email, :created, null, :notes)";
         $params = $this->prepareParams($user);
-        $params['created'] = $user->getCreated()->format('Y-m-d H:i:s');
-        return $this->connection->prepare($sql)->execute($params);
+        $params['created'] = $this->generateCreated();
+        $this->connection->prepare($sql)->execute($params);
+        return (int)$this->connection->lastInsertId($this->tableName);
+    }
+
+    protected function generateCreated(): string
+    {
+        return (new \DateTime)->format('Y-m-d H:i:s');
     }
 
     /**
@@ -87,9 +94,14 @@ class SqlUserRepository implements UserRepository
         $sql = "UPDATE `{$this->getTableName()}` SET `deleted` = :deleted WHERE id = :id";
         $params = [
             'id' => $user->getId(),
-            'deleted' => $user->getDeleted()->format('Y-m-d H:i:s')
+            'deleted' => $this->generateDelete()
         ];
         return $this->connection->prepare($sql)->execute($params);
+    }
+
+    protected function generateDelete(): string
+    {
+        return (new \DateTime())->format('Y-m-d H:i:s');
     }
 
     /**
@@ -104,5 +116,17 @@ class SqlUserRepository implements UserRepository
             'email' => $user->getEmail(),
             'notes' => $user->getNotes()
         ];
+    }
+
+    public function findById(int $id): ?User
+    {
+        $users = $this->connection->prepare("SELECT * FROM `{$this->getTableName()}` WHERE id = ?");
+
+        $users->execute([$id]);
+
+        foreach ($users->fetchAll() as $user) {
+            return User::fromState($user);
+        }
+        return null;
     }
 }

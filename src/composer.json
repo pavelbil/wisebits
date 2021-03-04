@@ -10,7 +10,6 @@
         }
     ],
     "require": {
-        "phpunit/phpunit": "^9.5",
         "ext-pdo": "*"
     },
     "autoload": {
@@ -18,5 +17,11 @@
             "App\\": "app",
             "Tests\\": "tests"
         }
+    },
+    "require-dev": {
+        "codeception/codeception": "^4.1",
+        "codeception/module-phpbrowser": "^1.0.0",
+        "codeception/module-asserts": "^1.0.0",
+        "codeception/module-db": "^1.1"
     }
 }

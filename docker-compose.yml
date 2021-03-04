@@ -6,5 +6,6 @@ services:
       - conf/environment.env
     volumes:
       - ./src:/src/app
+      - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     working_dir: /src/app
     command: sh -c "tail -f /dev/null"
