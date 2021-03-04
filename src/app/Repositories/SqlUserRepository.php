@@ -95,12 +95,12 @@ class SqlUserRepository implements UserRepository, QueryRepository
         $sql = "UPDATE `{$this->getTableName()}` SET `deleted` = :deleted WHERE id = :id";
         $params = [
             'id' => $user->getId(),
-            'deleted' => $this->generateDelete()
+            'deleted' => $this->generateDeleted()
         ];
         return $this->connection->prepare($sql)->execute($params);
     }
 
-    protected function generateDelete(): string
+    protected function generateDeleted(): string
     {
         return (new DateTime())->format('Y-m-d H:i:s');
     }

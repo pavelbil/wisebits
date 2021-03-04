@@ -24,8 +24,12 @@ class SqlUserRepositoryTest extends Unit
     protected function setUp(): void
     {
         parent::setUp();
-        $pdo = new PDO('sqlite:tests/_data/users.sqlite');
-        $this->repository = new SqlUserRepository($pdo);
+        $this->repository = new SqlUserRepository($this->getPdo());
+    }
+
+    protected function getPdo(): PDO
+    {
+        return $pdo = new PDO('sqlite:tests/_data/users.sqlite');
     }
 
     public function testFindAll()
@@ -38,9 +42,11 @@ class SqlUserRepositoryTest extends Unit
         $user = new User();
         $user->setName('pavel');
         $user->setEmail('example@mail.ru');
-        $userId = $this->repository->create($user);
+        $created = (new DateTime())->format('Y-m-d H:i:s');
+        $repository = $this->construct(SqlUserRepository::class, ['connection' => $this->getPdo()], ['generateCreated' => $created]);
+        $userId = $repository->create($user);
         $this->tester->assertNotEquals(0, $userId);
-        $this->tester->seeInDatabase('users', ['id' => $userId]);
+        $this->tester->seeInDatabase('users', ['id' => $userId, 'created' => $created]);
     }
 
     /**
@@ -73,8 +79,8 @@ class SqlUserRepositoryTest extends Unit
     {
         $user = new User(1);
         $deleted = (new DateTime())->format('Y-m-d H:i:s');
-        $this->make(SqlUserRepository::class, ['generateDelete' => $deleted]);
-        $this->repository->safeDelete($user);
+        $repository = $this->construct(SqlUserRepository::class, ['connection' => $this->getPdo()], ['generateDeleted' => $deleted]);
+        $repository->safeDelete($user);
         $this->tester->seeInDatabase('users', ['id' => 1, 'deleted' => $deleted]);
     }
 
