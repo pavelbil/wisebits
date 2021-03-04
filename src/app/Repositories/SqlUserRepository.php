@@ -5,10 +5,11 @@ namespace App\Repositories;
 
 
 use App\Entities\User;
-use PDO;
+use DateTime;
 use Exception;
+use PDO;
 
-class SqlUserRepository implements UserRepository
+class SqlUserRepository implements UserRepository, QueryRepository
 {
     private string $tableName = 'users';
     protected PDO $connection;
@@ -82,7 +83,7 @@ class SqlUserRepository implements UserRepository
 
     protected function generateCreated(): string
     {
-        return (new \DateTime)->format('Y-m-d H:i:s');
+        return (new DateTime)->format('Y-m-d H:i:s');
     }
 
     /**
@@ -101,7 +102,7 @@ class SqlUserRepository implements UserRepository
 
     protected function generateDelete(): string
     {
-        return (new \DateTime())->format('Y-m-d H:i:s');
+        return (new DateTime())->format('Y-m-d H:i:s');
     }
 
     /**
@@ -128,5 +129,33 @@ class SqlUserRepository implements UserRepository
             return User::fromState($user);
         }
         return null;
+    }
+
+    /**
+     * @param array $criteria
+     * @return User[]
+     */
+    public function findBy(array $criteria): array
+    {
+        $params = [];
+        $condition = [];
+        foreach ($criteria as $key => $value) {
+            if ($value == null) {
+                $condition[] = "`{$key}` IS NULL";
+                continue;
+            }
+            $condition[] = "`{$key}` = ?";
+            $params[] = $value;
+        }
+
+        $users = $this->connection->prepare("SELECT * FROM `{$this->getTableName()}` WHERE " . implode(' AND ', $condition));
+        $users->execute($params);
+
+        $result = [];
+        foreach ($users->fetchAll() as $user) {
+            $result[] = User::fromState($user);
+        }
+
+        return $result;
     }
 }

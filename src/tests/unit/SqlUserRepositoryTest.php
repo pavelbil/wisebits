@@ -1,15 +1,21 @@
 <?php
+
 namespace Tests\unit;
 
 use App\Entities\User;
 use App\Repositories\SqlUserRepository;
+use Codeception\Test\Unit;
+use DateTime;
+use Exception;
+use PDO;
+use Tests\UnitTester;
 
-class SqlUserRepositoryTest extends \Codeception\Test\Unit
+class SqlUserRepositoryTest extends Unit
 {
     /**
-     * @var \Tests\UnitTester
+     * @var UnitTester
      */
-    protected $tester;
+    protected UnitTester $tester;
     /**
      * @var SqlUserRepository
      */
@@ -18,7 +24,7 @@ class SqlUserRepositoryTest extends \Codeception\Test\Unit
     protected function setUp(): void
     {
         parent::setUp();
-        $pdo = new \PDO('sqlite:tests/_data/users.sqlite');
+        $pdo = new PDO('sqlite:tests/_data/users.sqlite');
         $this->repository = new SqlUserRepository($pdo);
     }
 
@@ -66,7 +72,7 @@ class SqlUserRepositoryTest extends \Codeception\Test\Unit
     public function testSafeDelete()
     {
         $user = new User(1);
-        $deleted = (new \DateTime())->format('Y-m-d H:i:s');
+        $deleted = (new DateTime())->format('Y-m-d H:i:s');
         $this->make(SqlUserRepository::class, ['generateDelete' => $deleted]);
         $this->repository->safeDelete($user);
         $this->tester->seeInDatabase('users', ['id' => 1, 'deleted' => $deleted]);
@@ -84,9 +90,30 @@ class SqlUserRepositoryTest extends \Codeception\Test\Unit
 
     public function testUpdateException()
     {
-        $this->tester->expectThrowable(\Exception::class, function() {
+        $this->tester->expectThrowable(Exception::class, function () {
             $user = new User(null, 'alexander');
             $this->repository->update($user);
         });
+    }
+
+    /**
+     * @dataProvider findByDataProvider
+     * @param $criteria
+     */
+    public function testFindBy($criteria)
+    {
+        $users = $this->repository->findBy($criteria);
+        $this->tester->seeNumRecords(count($users), 'users', $criteria);
+
+
+    }
+
+    public function findByDataProvider(): array
+    {
+        return [
+            [['id' => 1, 'name' => 'tcochran0']],
+            [['deleted' => null]],
+            [['email' => 'fake-email@gmail.com']]
+        ];
     }
 }

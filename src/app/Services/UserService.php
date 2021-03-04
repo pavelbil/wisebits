@@ -8,6 +8,7 @@ use App\Entities\User;
 use App\Repositories\UserRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Respect\Validation\Validator as v;
 
 class UserService implements LoggerAwareInterface
 {
@@ -43,7 +44,10 @@ class UserService implements LoggerAwareInterface
 
     public function validate(User $user): bool
     {
-        return true;
+        $usernameValidator = v::alnum()->notEmpty()->noWhitespace()->length(8, 64);
+        $emailValidator = v::email()->notEmpty()->lessThan(255)->unique();
+
+        return $usernameValidator->validate($user->getName()) && $emailValidator->validate($user->getEmail());
     }
 
     protected function writeLog($message): void

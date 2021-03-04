@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "respect/validation": "^2.2"
     },
     "autoload": {
         "psr-4": {
