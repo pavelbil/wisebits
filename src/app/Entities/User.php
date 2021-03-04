@@ -8,23 +8,23 @@ use Exception;
 
 class User
 {
-    private int $id;
-    private string $name;
-    private string $email;
-    private DateTime $created;
+    private ?int $id;
+    private ?string $name;
+    private ?string $email;
+    private ?DateTime $created;
     private ?DateTime $deleted;
-    private string $notes;
+    private ?string $notes;
 
     /**
      * User constructor.
-     * @param int $id
-     * @param string $name
-     * @param string $email
-     * @param DateTime $created
+     * @param int|null $id
+     * @param string|null $name
+     * @param string|null $email
+     * @param DateTime|null $created
      * @param DateTime|null $deleted
-     * @param string $notes
+     * @param string|null $notes
      */
-    public function __construct(int $id, string $name, string $email, DateTime $created, ?DateTime $deleted, string $notes)
+    public function __construct(int $id = null, string $name = null, string $email = null, DateTime $created = null, ?DateTime $deleted = null, string $notes = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -100,14 +100,6 @@ class User
     }
 
     /**
-     * @param DateTime $created
-     */
-    public function setCreated(DateTime $created): void
-    {
-        $this->created = $created;
-    }
-
-    /**
      * @return DateTime
      */
     public function getDeleted(): DateTime
@@ -116,25 +108,17 @@ class User
     }
 
     /**
-     * @param DateTime $deleted
+     * @return string|null
      */
-    public function setDeleted(DateTime $deleted): void
-    {
-        $this->deleted = $deleted;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNotes(): string
+    public function getNotes(): ?string
     {
         return $this->notes;
     }
 
     /**
-     * @param string $notes
+     * @param string|null $notes
      */
-    public function setNotes(string $notes): void
+    public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
     }

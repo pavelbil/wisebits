@@ -1,12 +1,16 @@
 <?php
-
-namespace Tests\Entities;
+namespace Tests\unit;
 
 use App\Entities\User;
-use Tests\UserTestCase;
+use Helper\Unit;
 
-class UserTest extends UserTestCase
+class UserTest extends \Codeception\Test\Unit
 {
+    /**
+     * @var \Tests\UnitTester
+     */
+    protected $tester;
+
     /**
      * @var array
      */
@@ -15,7 +19,14 @@ class UserTest extends UserTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->userData = $this->getUserData();
+        $this->userData = [
+            "id" => 1,
+            "name" => "pavel",
+            "email" => "example@gmail.com",
+            "notes" => "hello",
+            "created" => "2000-01-01 15:15:15",
+            "deleted" => null
+        ];
     }
 
     protected function createUserModel(): User
@@ -48,15 +59,13 @@ class UserTest extends UserTestCase
         return [
             ['name' => 'name', 'data' => 'ivan'],
             ['name' => 'email', 'data' => 'hello@world.ru'],
-            ['name' => 'notes', 'data' => 'lorem ipsum'],
-            ['name' => 'created', 'data' => new \DateTime()],
-            ['name' => 'deleted', 'data' => new \DateTime()]
+            ['name' => 'notes', 'data' => 'lorem ipsum']
         ];
     }
 
     public function testGetId()
     {
         $user = $this->createUserModel();
-        $this->assertEquals($this->userData['id'], $user->getId());
+        $this->tester->assertEquals($this->userData['id'], $user->getId());
     }
 }

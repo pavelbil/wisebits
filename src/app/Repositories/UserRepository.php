@@ -9,6 +9,12 @@ use App\Entities\User;
 interface UserRepository
 {
     /**
+     * @param int $id
+     * @return User|null
+     */
+    public function findById(int $id): ?User;
+
+    /**
      * @return User[]
      */
     public function findAll(): array;
@@ -20,10 +26,11 @@ interface UserRepository
     public function update(User $user): bool;
 
     /**
+     * Return added user id
      * @param User $user
-     * @return bool
+     * @return int
      */
-    public function create(User $user): bool;
+    public function create(User $user): int;
 
     /**
      * @param User $user
