@@ -5,13 +5,22 @@ namespace App\Services;
 
 
 use App\Entities\User;
+use App\Repositories\EmailArrayBlackList;
+use App\Repositories\NameArrayWhiteList;
 use App\Repositories\QueryRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\WhiteListRepository;
 use Psr\Log\LoggerInterface;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Factory;
 use Respect\Validation\Validator as v;
 
+/**
+ * Service for user manipulation
+ *
+ * Class UserService
+ * @package App\Services
+ */
 class UserService
 {
     /**
@@ -82,11 +91,11 @@ class UserService
         try {
             $userValidator = v::attribute(
                 'name',
-                v::alnum()->notEmpty()->noWhitespace()->length(8, 64)
+                v::alnum()->notEmpty()->noWhitespace()->length(8, 64)->nameBlackList($this->getNameWhiteListRepository())
             )
                 ->attribute(
                     'email',
-                    v::email()->notEmpty()->lessThan(255)->uniqueValue($this->getRepository(), 'email')
+                    v::email()->notEmpty()->lessThan(255)->uniqueValue($this->getRepository(), 'email')->mailerWhiteList($this->getMailerBlackListRepository())
                 );
 
             $userValidator->assert($user);
@@ -95,6 +104,16 @@ class UserService
         }
 
         return [];
+    }
+
+    protected function getNameWhiteListRepository(): WhiteListRepository
+    {
+        return new NameArrayWhiteList;
+    }
+
+    protected function getMailerBlackListRepository(): WhiteListRepository
+    {
+        return new EmailArrayBlackList;
     }
 
     protected function writeLog($message): void
