@@ -8,6 +8,7 @@ use App\Services\UserService;
 use Codeception\Test\Unit;
 use Exception;
 use Respect\Validation\Factory;
+use Tests\Log\MemoryLogger;
 use Tests\UnitTester;
 
 class UserServiceTest extends Unit
@@ -46,13 +47,61 @@ class UserServiceTest extends Unit
         ];
     }
 
-    protected function setUp(): void
+    public function testSave()
     {
-        Factory::setDefaultInstance(
-            (new Factory())
-                ->withRuleNamespace('\\Tests\\Validation\\Rules\\')
-                ->withExceptionNamespace('\Tests\\Validation\\Exceptions')
-        );
-        parent::setUp();
+        $newUserId = 100;
+        $repository = $this->make(SqlUserRepository::class, ['create' => $newUserId, 'update' => true]);
+
+        //insert
+        $logger = new MemoryLogger();
+        $service = $this->construct(UserService::class, [$repository, $logger], ['validate' => []]);
+        $this->tester->assertTrue($service->save(new User(null, str_repeat('a', 9), 'hello@example.com')));
+        $this->tester->assertCount(1, $logger->messages);
+
+        //update
+        $logger = new MemoryLogger();
+        $service = $this->construct(UserService::class, [$repository, $logger], ['validate' => []]);
+        $this->tester->assertTrue($service->save(new User($newUserId, str_repeat('a', 9), 'hello@example.com')));
+        $this->tester->assertCount(1, $logger->messages);
+
+        //invalid
+        $logger = new MemoryLogger();
+        $service = $this->construct(UserService::class, [$repository, $logger], ['validate' => ['name']]);
+        $this->tester->assertFalse($service->save(new User($newUserId, str_repeat('a', 9), 'hello@example.com')));
+        $this->tester->assertCount(0, $logger->messages);
+    }
+
+    public function testSaveFail()
+    {
+        $newUserId = 100;
+        $repository = $this->make(SqlUserRepository::class, ['create' => 0, 'update' => false]);
+        $logger = new MemoryLogger();
+        $service = $this->construct(UserService::class, [$repository, $logger], ['validate' => []]);
+
+        //insert
+        $this->tester->assertFalse($service->save(new User(null, str_repeat('a', 9), 'hello@example.com')));
+        $this->tester->assertCount(0, $logger->messages);
+
+        //update
+        $this->tester->assertFalse($service->save(new User($newUserId, str_repeat('a', 9), 'hello@example.com')));
+        $this->tester->assertCount(0, $logger->messages);
+    }
+
+    public function testDelete()
+    {
+        $repository = $this->make(SqlUserRepository::class, ['safeDelete' => true]);
+
+        //success
+        $logger = new MemoryLogger();
+        $service = $this->construct(UserService::class, [$repository, $logger]);
+        $this->tester->assertTrue($service->delete(new User(1)));
+        $this->tester->assertCount(1, $logger->messages);
+
+        //fail
+        $logger = new MemoryLogger();
+        $repository = $this->make(SqlUserRepository::class, ['safeDelete' => false]);
+        $service = $this->construct(UserService::class, [$repository, $logger]);
+        $this->tester->assertFalse($service->delete(new User(null)));
+        $this->tester->assertCount(0, $logger->messages);
     }
 }

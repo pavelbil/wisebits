@@ -41,12 +41,34 @@ class UserService
      */
     public function findAll(): array
     {
-        return [];
+        return $this->repository->findAll();
     }
 
-    public function save(): bool
+    public function save(User $user): bool
     {
-        $this->writeLog('User updated');
+        if (count($this->validate($user)) !== 0) {
+            return false;
+        }
+
+        if ($user->getId() && !$this->getRepository()->update($user)) {
+            return false;
+        }
+
+        if (!$this->getRepository()->create($user)) {
+            return false;
+        }
+
+        $this->writeLog('User has been changed');
+        return true;
+    }
+
+    public function delete(User $user): bool
+    {
+        if (!$this->getRepository()->safeDelete($user)) {
+            return false;
+        }
+
+        $this->writeLog('User has been deleted');
         return true;
     }
 
