@@ -5,8 +5,8 @@ namespace App\Services;
 
 
 use App\Entities\User;
-use App\Repositories\EmailArrayBlackList;
-use App\Repositories\NameArrayWhiteList;
+use App\Repositories\MemoryEmailBlackList;
+use App\Repositories\MemoryNameWhiteList;
 use App\Repositories\QueryRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WhiteListRepository;
@@ -108,12 +108,12 @@ class UserService
 
     protected function getNameWhiteListRepository(): WhiteListRepository
     {
-        return new NameArrayWhiteList;
+        return new MemoryNameWhiteList;
     }
 
     protected function getMailerBlackListRepository(): WhiteListRepository
     {
-        return new EmailArrayBlackList;
+        return new MemoryEmailBlackList;
     }
 
     protected function writeLog($message): void

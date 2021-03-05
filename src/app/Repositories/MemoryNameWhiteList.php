@@ -4,7 +4,7 @@
 namespace App\Repositories;
 
 
-class NameArrayWhiteList implements WhiteListRepository
+class MemoryNameWhiteList implements WhiteListRepository
 {
 
     const AVAILABLE_NAMES = [

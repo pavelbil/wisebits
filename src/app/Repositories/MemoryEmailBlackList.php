@@ -4,7 +4,7 @@
 namespace App\Repositories;
 
 
-class EmailArrayBlackList implements WhiteListRepository
+class MemoryEmailBlackList implements WhiteListRepository
 {
 
     const MAILERS = [
