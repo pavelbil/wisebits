@@ -10,7 +10,6 @@ use App\Repositories\UserRepository;
 use Psr\Log\LoggerInterface;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Factory;
-use Respect\Validation\Validatable;
 use Respect\Validation\Validator as v;
 
 class UserService
@@ -29,6 +28,12 @@ class UserService
     {
         $this->repository = $repository;
         $this->setLogger($logger);
+
+        Factory::setDefaultInstance(
+            (new Factory())
+                ->withRuleNamespace('App\\Validation\\Rules')
+                ->withExceptionNamespace('App\\Validation\\Exceptions')
+        );
     }
 
     /**
@@ -53,13 +58,14 @@ class UserService
     public function validate(User $user): array
     {
         try {
-            Factory::setDefaultInstance(
-                (new Factory())
-                    ->withRuleNamespace('App\\Validation\\Rules')
-                    ->withExceptionNamespace('App\\Validation\\Exceptions')
-            );
-            $userValidator = v::attribute('name', $this->getNameValidationRules())
-                ->attribute('email', $this->getEmailValidationRules());
+            $userValidator = v::attribute(
+                'name',
+                v::alnum()->notEmpty()->noWhitespace()->length(8, 64)
+            )
+                ->attribute(
+                    'email',
+                    v::email()->notEmpty()->lessThan(255)->uniqueValue($this->getRepository(), 'email')
+                );
 
             $userValidator->assert($user);
         } catch (NestedValidationException $e) {
@@ -67,22 +73,6 @@ class UserService
         }
 
         return [];
-    }
-
-    protected function getNameValidationRules(): Validatable
-    {
-        return v::alnum()
-            ->notEmpty()
-            ->noWhitespace()
-            ->length(8, 64);
-    }
-
-    protected function getEmailValidationRules(): Validatable
-    {
-        return v::email()
-            ->notEmpty()
-            ->lessThan(255);
-        //->uniqueValue($this->getRepository(), 'email');
     }
 
     protected function writeLog($message): void

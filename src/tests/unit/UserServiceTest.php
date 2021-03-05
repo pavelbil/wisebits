@@ -3,9 +3,11 @@
 namespace Tests\unit;
 
 use App\Entities\User;
+use App\Repositories\SqlUserRepository;
 use App\Services\UserService;
 use Codeception\Test\Unit;
 use Exception;
+use Respect\Validation\Factory;
 use Tests\UnitTester;
 
 class UserServiceTest extends Unit
@@ -23,7 +25,13 @@ class UserServiceTest extends Unit
      */
     public function testValidate($user, $expected)
     {
-        $service = $this->make(UserService::class);
+        Factory::setDefaultInstance(
+            (new Factory())
+                ->withRuleNamespace('\\Tests\\Validation\\Rules\\')
+                ->withExceptionNamespace('\Tests\\Validation\\Exceptions')
+        );
+
+        $service = $this->make(UserService::class, ['getRepository' => $this->make(SqlUserRepository::class)]);
         $this->tester->assertEquals($expected, array_keys($service->validate($user)));
     }
 
@@ -40,6 +48,11 @@ class UserServiceTest extends Unit
 
     protected function setUp(): void
     {
+        Factory::setDefaultInstance(
+            (new Factory())
+                ->withRuleNamespace('\\Tests\\Validation\\Rules\\')
+                ->withExceptionNamespace('\Tests\\Validation\\Exceptions')
+        );
         parent::setUp();
     }
 }
