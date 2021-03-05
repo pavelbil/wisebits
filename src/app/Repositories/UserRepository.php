@@ -6,7 +6,7 @@ namespace App\Repositories;
 
 use App\Entities\User;
 
-interface UserRepository
+interface UserRepository extends QueryRepository
 {
     /**
      * @param int $id

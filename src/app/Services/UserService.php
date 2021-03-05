@@ -5,12 +5,15 @@ namespace App\Services;
 
 
 use App\Entities\User;
+use App\Repositories\QueryRepository;
 use App\Repositories\UserRepository;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Respect\Validation\Exceptions\NestedValidationException;
+use Respect\Validation\Factory;
+use Respect\Validation\Validatable;
 use Respect\Validation\Validator as v;
 
-class UserService implements LoggerAwareInterface
+class UserService
 {
     /**
      * @var UserRepository
@@ -42,12 +45,44 @@ class UserService implements LoggerAwareInterface
         return true;
     }
 
-    public function validate(User $user): bool
+    protected function getRepository(): QueryRepository
     {
-        $usernameValidator = v::alnum()->notEmpty()->noWhitespace()->length(8, 64);
-        $emailValidator = v::email()->notEmpty()->lessThan(255)->unique();
+        return $this->repository;
+    }
 
-        return $usernameValidator->validate($user->getName()) && $emailValidator->validate($user->getEmail());
+    public function validate(User $user): array
+    {
+        try {
+            Factory::setDefaultInstance(
+                (new Factory())
+                    ->withRuleNamespace('App\\Validation\\Rules')
+                    ->withExceptionNamespace('App\\Validation\\Exceptions')
+            );
+            $userValidator = v::attribute('name', $this->getNameValidationRules())
+                ->attribute('email', $this->getEmailValidationRules());
+
+            $userValidator->assert($user);
+        } catch (NestedValidationException $e) {
+            return $e->getMessages();
+        }
+
+        return [];
+    }
+
+    protected function getNameValidationRules(): Validatable
+    {
+        return v::alnum()
+            ->notEmpty()
+            ->noWhitespace()
+            ->length(8, 64);
+    }
+
+    protected function getEmailValidationRules(): Validatable
+    {
+        return v::email()
+            ->notEmpty()
+            ->lessThan(255);
+        //->uniqueValue($this->getRepository(), 'email');
     }
 
     protected function writeLog($message): void
