@@ -6,19 +6,19 @@ use App\Repositories\WhiteListRepository;
 use Respect\Validation\Rules\AbstractRule;
 
 /**
- * Class NameBlackList
+ * Class ExistsValue
  * @package App\Validation\Rules
  */
-class NameBlackList extends AbstractRule
+class ExistsValue extends AbstractRule
 {
 
     /**
      * @var WhiteListRepository
      */
-    private WhiteListRepository $repository;
+    protected WhiteListRepository $repository;
 
     /**
-     * NameBlackList constructor.
+     * ExistsValue constructor.
      * @param WhiteListRepository $repository
      */
     public function __construct(WhiteListRepository $repository)
@@ -32,6 +32,6 @@ class NameBlackList extends AbstractRule
      */
     public function validate($input): bool
     {
-        return !$this->repository->isExist($input);
+        return $this->repository->isExist($input);
     }
 }

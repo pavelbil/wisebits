@@ -2,29 +2,12 @@
 
 namespace App\Validation\Rules;
 
-use App\Repositories\WhiteListRepository;
-use Respect\Validation\Rules\AbstractRule;
-
 /**
  * Class MailerWhiteList
  * @package App\Validation\Rules
  */
-class MailerWhiteList extends AbstractRule
+class MailerWhiteList extends ExistsValue
 {
-
-    /**
-     * @var WhiteListRepository
-     */
-    private WhiteListRepository $repository;
-
-    /**
-     * MailerWhiteList constructor.
-     * @param WhiteListRepository $repository
-     */
-    public function __construct(WhiteListRepository $repository)
-    {
-        $this->repository = $repository;
-    }
 
     /**
      * @param mixed $input
@@ -33,7 +16,7 @@ class MailerWhiteList extends AbstractRule
     public function validate($input): bool
     {
         $mailer = $this->getMailerByEmail($input);
-        return $this->repository->isExist($mailer);
+        return parent::validate($mailer);
     }
 
     /**

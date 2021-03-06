@@ -91,7 +91,7 @@ class UserService
         try {
             $userValidator = v::attribute(
                 'name',
-                v::alnum()->notEmpty()->noWhitespace()->length(8, 64)->nameBlackList($this->getNameWhiteListRepository())
+                v::alnum()->notEmpty()->noWhitespace()->length(8, 64)->nameWhiteList($this->getNameWhiteListRepository())
             )
                 ->attribute(
                     'email',

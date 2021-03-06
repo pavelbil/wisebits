@@ -5,10 +5,10 @@ namespace Tests\Validation\Rules;
 use Respect\Validation\Rules\AbstractRule;
 
 /**
- * Class NameBlackList
+ * Class NameWhiteList
  * @package Tests\Validation\Rules
  */
-class NameBlackList extends AbstractRule
+class NameWhiteList extends AbstractRule
 {
     public function __construct()
     {
