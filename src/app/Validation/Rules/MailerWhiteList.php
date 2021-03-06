@@ -25,6 +25,10 @@ class MailerWhiteList extends ExistsValue
      */
     public function getMailerByEmail($email): string
     {
-        return substr($email, strrpos($email, '@'));
+        $emailArray = explode('@', $email);
+        if (count($emailArray) !== 2) {
+            return '';
+        }
+        return end($emailArray);
     }
 }
