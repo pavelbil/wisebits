@@ -3,8 +3,8 @@
 namespace Tests\unit;
 
 use App\Entities\User;
-use App\Repositories\MemoryEmailBlackListInterface;
-use App\Repositories\MemoryNameWhiteListInterface;
+use App\Repositories\MemoryEmailBlackList;
+use App\Repositories\MemoryNameWhiteList;
 use App\Repositories\SqlUserRepository;
 use App\Services\UserService;
 use Codeception\Test\Unit;
@@ -36,8 +36,8 @@ class UserServiceTest extends Unit
 
         $service = $this->make(UserService::class, [
             'getRepository' => $this->make(SqlUserRepository::class),
-            'getNameWhiteListRepository' => $this->make(MemoryNameWhiteListInterface::class),
-            'getMailerBlackListRepository' => $this->make(MemoryEmailBlackListInterface::class)
+            'getNameWhiteListRepository' => $this->make(MemoryNameWhiteList::class),
+            'getMailerBlackListRepository' => $this->make(MemoryEmailBlackList::class)
         ]);
         $this->tester->assertEquals($expected, array_keys($service->validate($user)));
     }
@@ -57,8 +57,8 @@ class UserServiceTest extends Unit
     {
         $newUserId = 100;
         $repository = $this->make(SqlUserRepository::class, ['create' => $newUserId, 'update' => true]);
-        $nameRepository = $this->make(MemoryNameWhiteListInterface::class);
-        $mailerRepository = $this->make(MemoryEmailBlackListInterface::class);
+        $nameRepository = $this->make(MemoryNameWhiteList::class);
+        $mailerRepository = $this->make(MemoryEmailBlackList::class);
 
         //insert
         $logger = new MemoryLogger();
@@ -84,8 +84,8 @@ class UserServiceTest extends Unit
         $newUserId = 100;
         $repository = $this->make(SqlUserRepository::class, ['create' => 0, 'update' => false]);
         $logger = new MemoryLogger();
-        $nameRepository = $this->make(MemoryNameWhiteListInterface::class);
-        $mailerRepository = $this->make(MemoryEmailBlackListInterface::class);
+        $nameRepository = $this->make(MemoryNameWhiteList::class);
+        $mailerRepository = $this->make(MemoryEmailBlackList::class);
 
         $service = $this->construct(UserService::class, [$repository, $logger, $nameRepository, $mailerRepository], ['validate' => []]);
 
@@ -101,8 +101,8 @@ class UserServiceTest extends Unit
     public function testDelete()
     {
         $repository = $this->make(SqlUserRepository::class, ['safeDelete' => true]);
-        $nameRepository = $this->make(MemoryNameWhiteListInterface::class);
-        $mailerRepository = $this->make(MemoryEmailBlackListInterface::class);
+        $nameRepository = $this->make(MemoryNameWhiteList::class);
+        $mailerRepository = $this->make(MemoryEmailBlackList::class);
 
         //success
         $logger = new MemoryLogger();

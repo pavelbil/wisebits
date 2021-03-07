@@ -42,12 +42,12 @@ class User
     public static function fromState(array $state): User
     {
         return new self(
-            intval($state['id']),
-            $state['name'],
-            $state['email'],
-            new DateTime($state['created']),
-            $state['deleted'] ? new DateTime($state['deleted']) : null,
-            $state['notes']
+            isset($state['id']) ? intval($state['id']) : null,
+            $state['name'] ?? null,
+            $state['email'] ?? null,
+            isset($state['created']) ? new DateTime($state['created']) : null,
+            isset($state['deleted']) ? new DateTime($state['deleted']) : null,
+            $state['notes'] ?? null
         );
     }
 

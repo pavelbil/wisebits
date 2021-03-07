@@ -31,6 +31,16 @@ class UserService
      */
     private LoggerInterface $logger;
 
+    /**
+     * @var WhiteListRepositoryInterface
+     */
+    private WhiteListRepositoryInterface $nameRepository;
+
+    /**
+     * @var WhiteListRepositoryInterface
+     */
+    private WhiteListRepositoryInterface $mailerRepository;
+
     public function __construct(UserRepositoryInterface $repository, LoggerInterface $logger, WhiteListRepositoryInterface $nameRepository, WhiteListRepositoryInterface $mailerRepository)
     {
         $this->repository = $repository;

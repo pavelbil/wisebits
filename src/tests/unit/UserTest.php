@@ -2,7 +2,6 @@
 namespace Tests\unit;
 
 use App\Entities\User;
-use Helper\Unit;
 
 class UserTest extends \Codeception\Test\Unit
 {
@@ -67,5 +66,23 @@ class UserTest extends \Codeception\Test\Unit
     {
         $user = $this->createUserModel();
         $this->tester->assertEquals($this->userData['id'], $user->getId());
+    }
+
+    /**
+     * @dataProvider fromStateDataProvider
+     */
+    public function testFromState($data)
+    {
+        $user = User::fromState($data);
+        $this->tester->assertInstanceOf(User::class, $user);
+    }
+
+    public function fromStateDataProvider()
+    {
+        return [
+            [['name' => 'pavel']],
+            [[]],
+            [['id' => '1', 'name' => 'pavel', 'created' => '2020-01-01 01:01:01', 'deleted' => null, 'notes' => 'notes1']]
+        ];
     }
 }
