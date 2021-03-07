@@ -2,10 +2,8 @@ version: "2.2"
 services:
   php-test:
     build: .
-    env_file:
-      - conf/environment.env
     volumes:
       - ./src:/src/app
       - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     working_dir: /src/app
-    command: sh -c "composer install && tail -f /dev/null"
+    command: sh -c "composer install && vendor/bin/codecept run unit"
