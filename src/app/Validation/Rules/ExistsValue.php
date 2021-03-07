@@ -2,7 +2,7 @@
 
 namespace App\Validation\Rules;
 
-use App\Repositories\WhiteListRepository;
+use App\Repositories\WhiteListRepositoryInterface;
 use Respect\Validation\Rules\AbstractRule;
 
 /**
@@ -13,15 +13,15 @@ class ExistsValue extends AbstractRule
 {
 
     /**
-     * @var WhiteListRepository
+     * @var WhiteListRepositoryInterface
      */
-    protected WhiteListRepository $repository;
+    protected WhiteListRepositoryInterface $repository;
 
     /**
      * ExistsValue constructor.
-     * @param WhiteListRepository $repository
+     * @param WhiteListRepositoryInterface $repository
      */
-    public function __construct(WhiteListRepository $repository)
+    public function __construct(WhiteListRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }

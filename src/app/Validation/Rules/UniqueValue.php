@@ -2,17 +2,17 @@
 
 namespace App\Validation\Rules;
 
-use App\Repositories\QueryRepository;
+use App\Repositories\QueryRepositoryInterface;
 use Respect\Validation\Rules\AbstractRule;
 
 class UniqueValue extends AbstractRule
 {
 
-    private QueryRepository $repository;
+    private QueryRepositoryInterface $repository;
     private string $field;
     private ?int $id;
 
-    public function __construct(QueryRepository $repository, string $field, ?int $id = null)
+    public function __construct(QueryRepositoryInterface $repository, string $field, ?int $id = null)
     {
         $this->repository = $repository;
         $this->field = $field;

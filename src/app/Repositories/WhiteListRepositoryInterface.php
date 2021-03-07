@@ -4,7 +4,7 @@
 namespace App\Repositories;
 
 
-interface WhiteListRepository
+interface WhiteListRepositoryInterface
 {
     public function isExist(string $value): bool;
 }

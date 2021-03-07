@@ -5,7 +5,7 @@ namespace Tests\unit;
 use App\Entities\User;
 use App\Validation\Rules\UniqueValue;
 use Codeception\Test\Unit;
-use Tests\StubQueryRepository;
+use Tests\StubQueryRepositoryInterface;
 use Tests\UnitTester;
 
 class UniqueValueTest extends Unit
@@ -32,7 +32,7 @@ class UniqueValueTest extends Unit
     {
         $rule = $this->construct(
             UniqueValue::class,
-            ['repository' => $this->make(StubQueryRepository::class), 'field' => 'email', 'id' => $id],
+            ['repository' => $this->make(StubQueryRepositoryInterface::class), 'field' => 'email', 'id' => $id],
             ['findSimilarEntities' => $entities, 'getId' => $id]);
         $this->tester->assertEquals($expected, $rule->validate('hello@world.ru'));
     }

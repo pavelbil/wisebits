@@ -5,9 +5,9 @@ namespace App\Services;
 
 
 use App\Entities\User;
-use App\Repositories\QueryRepository;
-use App\Repositories\UserRepository;
-use App\Repositories\WhiteListRepository;
+use App\Repositories\QueryRepositoryInterface;
+use App\Repositories\UserRepositoryInterface;
+use App\Repositories\WhiteListRepositoryInterface;
 use Psr\Log\LoggerInterface;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Factory;
@@ -22,16 +22,16 @@ use Respect\Validation\Validator as v;
 class UserService
 {
     /**
-     * @var UserRepository
+     * @var UserRepositoryInterface
      */
-    protected UserRepository $repository;
+    protected UserRepositoryInterface $repository;
 
     /**
      * @var LoggerInterface
      */
     private LoggerInterface $logger;
 
-    public function __construct(UserRepository $repository, LoggerInterface $logger, WhiteListRepository $nameRepository, WhiteListRepository $mailerRepository)
+    public function __construct(UserRepositoryInterface $repository, LoggerInterface $logger, WhiteListRepositoryInterface $nameRepository, WhiteListRepositoryInterface $mailerRepository)
     {
         $this->repository = $repository;
         $this->setLogger($logger);
@@ -81,7 +81,7 @@ class UserService
         return true;
     }
 
-    protected function getRepository(): QueryRepository
+    protected function getRepository(): QueryRepositoryInterface
     {
         return $this->repository;
     }
@@ -106,12 +106,12 @@ class UserService
         return [];
     }
 
-    protected function getNameWhiteListRepository(): WhiteListRepository
+    protected function getNameWhiteListRepository(): WhiteListRepositoryInterface
     {
         return $this->nameRepository;
     }
 
-    protected function getMailerBlackListRepository(): WhiteListRepository
+    protected function getMailerBlackListRepository(): WhiteListRepositoryInterface
     {
         return $this->mailerRepository;
     }

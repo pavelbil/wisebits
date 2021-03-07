@@ -4,7 +4,7 @@ namespace Tests\unit;
 
 use App\Validation\Rules\MailerWhiteList;
 use Codeception\Test\Unit;
-use Tests\Repository\MemoryWhiteListRepository;
+use Tests\Repository\MemoryWhiteListRepositoryInterface;
 use Tests\UnitTester;
 
 class MailerWhiteListTest extends Unit
@@ -30,7 +30,7 @@ class MailerWhiteListTest extends Unit
     {
         $rule = $this->make(
             MailerWhiteList::class,
-            ['repository' => $this->make(MemoryWhiteListRepository::class, ['isExist' => function ($email) {
+            ['repository' => $this->make(MemoryWhiteListRepositoryInterface::class, ['isExist' => function ($email) {
                 return $email === 'gmail.com';
             }])]);
         $this->tester->assertEquals($expected, $rule->validate($value));

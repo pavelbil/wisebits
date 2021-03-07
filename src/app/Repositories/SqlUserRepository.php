@@ -9,7 +9,7 @@ use DateTime;
 use Exception;
 use PDO;
 
-class SqlUserRepository implements UserRepository
+class SqlUserRepository implements UserRepositoryInterface
 {
     private string $tableName = 'users';
     protected PDO $connection;
