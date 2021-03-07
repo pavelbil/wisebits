@@ -4,10 +4,10 @@
 namespace App\Repositories;
 
 
-class MemoryNameWhiteList implements WhiteListRepositoryInterface
+class MemoryNameBlackList implements WhiteListRepositoryInterface
 {
 
-    const AVAILABLE_NAMES = [
+    const FORBIDDEN_NAMES = [
         'pavel001' => true,
         'pavel002' => true,
         'pavel003' => true,
@@ -18,6 +18,6 @@ class MemoryNameWhiteList implements WhiteListRepositoryInterface
 
     public function isExist(string $value): bool
     {
-        return !empty(self::AVAILABLE_NAMES[$value]);
+        return !empty(self::FORBIDDEN_NAMES[$value]);
     }
 }
