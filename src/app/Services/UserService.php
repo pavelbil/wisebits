@@ -5,8 +5,6 @@ namespace App\Services;
 
 
 use App\Entities\User;
-use App\Repositories\MemoryEmailBlackList;
-use App\Repositories\MemoryNameWhiteList;
 use App\Repositories\QueryRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WhiteListRepository;
@@ -33,10 +31,12 @@ class UserService
      */
     private LoggerInterface $logger;
 
-    public function __construct(UserRepository $repository, LoggerInterface $logger)
+    public function __construct(UserRepository $repository, LoggerInterface $logger, WhiteListRepository $nameRepository, WhiteListRepository $mailerRepository)
     {
         $this->repository = $repository;
         $this->setLogger($logger);
+        $this->nameRepository = $nameRepository;
+        $this->mailerRepository = $mailerRepository;
 
         Factory::setDefaultInstance(
             (new Factory())
@@ -108,12 +108,12 @@ class UserService
 
     protected function getNameWhiteListRepository(): WhiteListRepository
     {
-        return new MemoryNameWhiteList;
+        return $this->nameRepository;
     }
 
     protected function getMailerBlackListRepository(): WhiteListRepository
     {
-        return new MemoryEmailBlackList;
+        return $this->mailerRepository;
     }
 
     protected function writeLog($message): void
